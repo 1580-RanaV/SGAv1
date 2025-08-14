@@ -81,7 +81,7 @@ export default function ExportPdf() {
 
   return (
     <Button onClick={handleExport} className="min-w-40">
-      Export PDF
+      Export PDF (paused)
     </Button>
   );
 }
