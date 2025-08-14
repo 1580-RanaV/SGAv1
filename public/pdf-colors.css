@@ -1,0 +1,15 @@
+/* Override Tailwind v4 modern color functions for html2canvas */
+* {
+  color: rgb(0, 0, 0) !important;
+  background-color: rgb(255, 255, 255) !important;
+  border-color: rgb(229, 229, 229) !important;
+}
+
+a {
+  color: rgb(0, 102, 204) !important;
+}
+
+button {
+  background-color: rgb(240, 240, 240) !important;
+  color: rgb(0, 0, 0) !important;
+}
