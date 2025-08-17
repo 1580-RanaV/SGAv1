@@ -73,7 +73,7 @@ export default function Editor({ onAnalyze }) {
               className="hidden"
               onChange={handleJdFileChange}
             />
-            <Button variant="outline" onClick={onAttachJdPdf}>
+            <Button className="bg-black text-white" variant="outline" onClick={onAttachJdPdf}>
               {parsing.jd ? "Parsing…" : "Attach PDF"}
             </Button>
           </div>
@@ -106,7 +106,7 @@ export default function Editor({ onAnalyze }) {
               className="hidden"
               onChange={handleResumeFileChange}
             />
-            <Button variant="outline" onClick={onAttachResumePdf}>
+            <Button className="bg-black text-white" variant="outline" onClick={onAttachResumePdf}>
               {parsing.resume ? "Parsing…" : "Attach PDF"}
             </Button>
           </div>

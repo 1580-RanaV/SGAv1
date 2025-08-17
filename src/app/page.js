@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Target, Sparkles, FileText, Download, BarChart3, Zap } from "lucide-react";
+import { Target, Sparkles, FileText, BarChart3, Zap } from "lucide-react";
 
-// Import components (keeping original functionality)
+// Keep your existing components
 import Header from "@/app/components/Header";
 import Editor from "@/app/components/Editor";
 import ScoreGauge from "@/app/components/ScoreGauge";
@@ -21,48 +21,47 @@ export default function Page() {
   const [missing, setMissing] = useState([]);
   const [weak, setWeak] = useState([]);
 
-  // AI output
   const [ai, setAi] = useState({ plan: [], resume_bullets: [] });
 
-  // Evidence/highlighter state
   const [jdText, setJdText] = useState("");
   const [resumeText, setResumeText] = useState("");
   const [jdSpans, setJdSpans] = useState([]);
   const [resumeSpans, setResumeSpans] = useState([]);
   const [activeSkill, setActiveSkill] = useState(null);
 
-  // Build skills for CoverageBar (normalize 0..1)
+  // Normalize skills for the coverage chart
   const skills = useMemo(() => {
     const clamp01 = (v) => Math.max(0, Math.min(1, Number(v) || 0));
 
-    const a = (present || []).map(p => ({
+    const a = (present || []).map((p) => ({
       skill: p.skill || p.name || "",
       jdWeight: clamp01(p.weight ?? 0.8),
       resumeScore: clamp01(p.resume_weight ?? p.weight ?? 0.7),
     }));
 
-    const b = (missing || []).map(m => ({
+    const b = (missing || []).map((m) => ({
       skill: m.skill || m.name || "",
       jdWeight: clamp01(m.weight ?? 0.9),
       resumeScore: 0,
     }));
 
-    const c = (weak || []).map(w => ({
+    const c = (weak || []).map((w) => ({
       skill: w.skill || w.name || "",
       jdWeight: clamp01(w.weight ?? 0.8),
       resumeScore: clamp01(w.resume_weight ?? 0.3),
     }));
 
     const map = new Map();
-    [...a, ...b, ...c].forEach(s => {
-      const key = s.skill.toLowerCase();
+    [...a, ...b, ...c].forEach((s) => {
+      const key = (s.skill || "").toLowerCase();
       const prev = map.get(key);
       if (!prev) map.set(key, s);
-      else map.set(key, {
-        skill: s.skill,
-        jdWeight: Math.max(prev.jdWeight, s.jdWeight),
-        resumeScore: Math.max(prev.resumeScore, s.resumeScore),
-      });
+      else
+        map.set(key, {
+          skill: s.skill,
+          jdWeight: Math.max(prev.jdWeight, s.jdWeight),
+          resumeScore: Math.max(prev.resumeScore, s.resumeScore),
+        });
     });
 
     return Array.from(map.values()).sort((x, y) => y.jdWeight - x.jdWeight);
@@ -84,7 +83,9 @@ export default function Page() {
 
       const text = await res.text();
       let json;
-      try { json = JSON.parse(text); } catch {
+      try {
+        json = JSON.parse(text);
+      } catch {
         throw new Error(`Non-JSON response: ${text.slice(0, 200)}`);
       }
 
@@ -93,7 +94,6 @@ export default function Page() {
       setMissing(json.missing || []);
       setWeak(json.weak || []);
 
-      // ✅ store plan (fallback to suggestions key if API ever uses it)
       setAi({
         plan: json.plan || json.suggestions || [],
         resume_bullets: json.resume_bullets || [],
@@ -110,147 +110,164 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="min-h-screen bg-white ui-fix">
       <Header />
-      
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        {/* Hero Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+
+      <main className="mx-auto max-w-8xl px-6 py-10">
+        {/* Intro / Toolbar */}
+        <section className="mb-8">
+          <div className="flex items-center justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-                  <BarChart3 className="w-5 h-5 text-white" />
-                </div>
-                <h1 className="text-2xl font-bold text-slate-800 font-inter tracking-tighter">
+                {/* <div className="w-10 h-10 rounded-xl border border-neutral-200 bg-white flex items-center justify-center shadow-sm">
+                  <BarChart3 className="w-5 h-5 text-neutral-900" />
+                </div> */}
+                <h1 className="text-2xl font-medium text-neutral-900 tracking-tighter">
                   Resume Gap Analysis
                 </h1>
               </div>
-              <p className="text-slate-600 font-inter tracking-tighter max-w-2xl">
-                Analyze how well your resume matches job descriptions with AI-powered insights and actionable recommendations.
+              <p className="text-neutral-600 max-w-2xl tracking-tighter">
+                Paste your JD & resume, then get a clear, visual breakdown of alignment, gaps, and improvements.
               </p>
             </div>
-            
-            <div className="flex items-center gap-3">
-              <ExportPdf />
+
+            <ExportPdf />
+          </div>
+        </section>
+
+        {/* 1) Editors (full width card) */}
+        <section className="mb-8">
+          <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-white" />
+                </div>
+                <h2 className="text-lg font-semibold tracking-tighter">Editors</h2>
+              </div>
+              <span className="rounded-full bg-white/10 px-4 py-1 text-xs font-semibold">
+                Job Description + Resume
+              </span>
+            </div>
+
+            <div className="p-6">
+              {/* Put Editor directly; it carries your form + analyze button */}
+              <Editor className="data-force-white" onAnalyze={onAnalyze} />
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Editor Section */}
-        <div className="mb-8">
-          <Editor onAnalyze={onAnalyze} />
-        </div>
-
-        {/* Results Section */}
-        <div id="reportRoot" className="space-y-8">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-16">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-4 shadow-lg">
+        {/* 2) Loading state */}
+        {loading && (
+          <section className="mb-8">
+            <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-10 text-center">
+              <div className="mx-auto mb-4 w-16 h-16 rounded-2xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
                 <Zap className="w-8 h-8 text-white animate-pulse" />
               </div>
-              <div className="text-slate-700 font-medium font-inter tracking-tighter mb-2">
-                Analyzing your resume...
+              <div className="text-white font-medium tracking-tighter mb-2">
+                Analyzing your resume…
               </div>
               <LoadingDots />
             </div>
-          ) : (
-            <>
-              {/* Score Section */}
-              {score > 0 && (
-                <div className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 shadow-sm">
-                  <ScoreGauge value={score} />
-                </div>
-              )}
+          </section>
+        )}
 
-              {/* Gap Analysis Table */}
-              {(present.length > 0 || missing.length > 0 || weak.length > 0) && (
-                <div className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-sm overflow-hidden">
-                  <div className="p-6 border-b border-slate-200/60">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                        <Target className="w-4 h-4 text-white" />
-                      </div>
-                      <h2 className="text-lg font-semibold text-slate-800 font-inter tracking-tighter">
-                        Skills Gap Analysis
-                      </h2>
+        {!loading && (
+          <>
+            {/* 3) Match Score (card) */}
+            {score > 0 && (
+              <section className="mb-8">
+                <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                      <BarChart3 className="w-4 h-4 text-white" />
                     </div>
-                    <p className="text-slate-600 text-sm font-inter tracking-tighter">
-                      Detailed breakdown of skills found, missing, or needing improvement
-                    </p>
+                    <h2 className="text-lg text-white font-semibold tracking-tighter">Match Score</h2>
                   </div>
-                  <GapTable
-                    present={present}
-                    missing={missing}
-                    weak={weak}
-                    onSelectSkill={(s) => setActiveSkill(s)}
-                  />
+                  <div className="bg-black rounded-2xl p-6">
+                    <ScoreGauge value={score} />
+                  </div>
                 </div>
-              )}
+              </section>
+            )}
 
-              {/* AI Suggestions */}
-              {ai.plan.length > 0 && (
-                <div className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-sm overflow-hidden">
-                  <div className="p-6 border-b border-slate-200/60">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                        <Sparkles className="w-4 h-4 text-white" />
-                      </div>
-                      <h2 className="text-lg font-semibold text-slate-800 font-inter tracking-tighter">
-                        AI Recommendations
-                      </h2>
+            {/* 4) Skills Gap Analysis (card) */}
+            {(present.length > 0 || missing.length > 0 || weak.length > 0) && (
+              <section className="mb-8">
+                <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl overflow-hidden">
+                  <div className="px-6 py-5 border-b border-white/10 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                      <Target className="w-4 h-4 text-white" />
                     </div>
-                    <p className="text-slate-600 text-sm font-inter tracking-tighter">
-                      Personalized suggestions to improve your resume match score
-                    </p>
+                    <h2 className="text-lg font-semibold tracking-tighter">Skills Gap Analysis</h2>
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 bg-black">
+                    <GapTable
+                      present={present}
+                      missing={missing}
+                      weak={weak}
+                      onSelectSkill={(s) => setActiveSkill(s)}
+                    />
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* 5) AI Recommendations (card) */}
+            {ai.plan.length > 0 && (
+              <section className="mb-8">
+                <div className="rounded-3xl bg-neutral-950 text-black ring-1 ring-white/10 shadow-2xl overflow-hidden">
+                  <div className="px-6 py-5 border-b border-white/10 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-white" />
+                    </div>
+                    <h2 className="text-lg text-white font-semibold tracking-tighter">AI Recommendations</h2>
+                  </div>
+                  <div className="p-6 bg-black">
                     <Suggestions plan={ai.plan} resume_bullets={ai.resume_bullets} />
                   </div>
                 </div>
-              )}
+              </section>
+            )}
 
-              {/* Coverage Chart */}
-              {skills.length > 0 && (
-                <div className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 shadow-sm">
+            {/* 6) Skills Coverage (card) */}
+            {skills.length > 0 && (
+              <section className="mb-8">
+                <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-6">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
                       <BarChart3 className="w-4 h-4 text-white" />
                     </div>
-                    <div>
-                      <h2 className="text-lg font-semibold text-slate-800 font-inter tracking-tighter">
-                        Skills Coverage
-                      </h2>
-                      <p className="text-slate-600 text-sm font-inter tracking-tighter">
-                        Visual representation of skill alignment
-                      </p>
-                    </div>
+                    <h2 className="text-lg font-semibold tracking-tighter">Skills Coverage</h2>
                   </div>
-                  <CoverageBar
-                    skills={skills}
-                    onBarClick={(s) => setActiveSkill(s.skill)}
-                  />
+                  <div className="bg-white rounded-2xl p-6">
+                    <CoverageBar
+                      skills={skills}
+                      onBarClick={(s) => setActiveSkill(s.skill)}
+                    />
+                  </div>
                 </div>
-              )}
+              </section>
+            )}
 
-              {/* Evidence Highlighter */}
-              {(jdText || resumeText) && (
-                <div className="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-sm overflow-hidden">
-                  <div className="p-6 border-b border-slate-200/60">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+            {/* 7) Evidence Highlighting (card) */}
+            {(jdText || resumeText) && (
+              <section className="mb-8">
+                <div className="rounded-3xl bg-neutral-950 text-black ring-1 ring-white/10 shadow-2xl overflow-hidden">
+                  <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
                         <FileText className="w-4 h-4 text-white" />
                       </div>
-                      <h2 className="text-lg font-semibold text-slate-800 font-inter tracking-tighter">
-                        Evidence Highlighting
-                      </h2>
+                      <h2 className="text-lg text-white font-semibold tracking-tighter">Evidence Highlighting</h2>
                     </div>
-                    <p className="text-slate-600 text-sm font-inter tracking-tighter">
-                      See exactly where skills are mentioned in both documents
-                    </p>
+                    <span className="rounded-full text-white bg-neutral-800 px-4 py-1 text-xs font-semibold">
+                      JD ↔ Resume traceability
+                    </span>
                   </div>
-                  <div className="p-6">
-                    <div className="grid lg:grid-cols-2 gap-6">
+
+                  <div className="p-6 bg-black">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <EvidenceHighlighter
                         title="Job Description"
                         text={jdText}
@@ -268,10 +285,10 @@ export default function Page() {
                     </div>
                   </div>
                 </div>
-              )}
-            </>
-          )}
-        </div>
+              </section>
+            )}
+          </>
+        )}
       </main>
     </div>
   );

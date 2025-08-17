@@ -80,8 +80,9 @@ export default function ExportPdf() {
   };
 
   return (
-    <Button onClick={handleExport} className="min-w-40">
-      Export PDF (paused)
-    </Button>
+    <Button onClick={handleExport} data-force-white className="min-w-40">
+  Export PDF (paused)
+</Button>
+
   );
 }
