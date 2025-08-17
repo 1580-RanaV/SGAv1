@@ -11,24 +11,25 @@ export default function CoverageBar({ skills = [], onBarClick }) {
   const labels = skills.map(s => s.skill);
 
   const data = useMemo(() => ({
-    labels,
-    datasets: [
-      {
-        label: "JD emphasis",
-        data: skills.map(s => s.jdWeight ?? 0),
-        backgroundColor: "rgba(31,41,55,0.25)", // neutral gray
-        borderRadius: 6,
-        maxBarThickness: 28,
-      },
-      {
-        label: "Resume evidence",
-        data: skills.map(s => s.resumeScore ?? 0),
-        backgroundColor: "rgba(16,185,129,0.70)", // green
-        borderRadius: 6,
-        maxBarThickness: 28,
-      },
-    ],
-  }), [labels, skills]);
+  labels,
+  datasets: [
+    {
+      label: "JD emphasis",
+      data: skills.map(s => s.jdWeight ?? 0),
+      backgroundColor: "rgba(229,231,235,0.7)", // light gray (Tailwind gray-200 w/ opacity)
+      borderRadius: 6,
+      maxBarThickness: 28,
+    },
+    {
+      label: "Resume evidence",
+      data: skills.map(s => s.resumeScore ?? 0),
+      backgroundColor: "rgba(16,185,129,0.85)", // emerald-500 (nice green)
+      borderRadius: 6,
+      maxBarThickness: 28,
+    },
+  ],
+}), [labels, skills]);
+
 
   const options = useMemo(() => ({
     responsive: true,

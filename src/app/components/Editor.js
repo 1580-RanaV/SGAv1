@@ -128,7 +128,11 @@ export default function Editor({ onAnalyze }) {
       </div>
 
       <div className="md:col-span-2 flex items-center justify-end">
-        <Button onClick={() => onAnalyze({ jd, resume })} className="min-w-40">
+        <Button
+          data-force-white
+          onClick={() => onAnalyze({ jd, resume })}
+          className="min-w-40 border-2"
+        >
           Analyze
         </Button>
       </div>

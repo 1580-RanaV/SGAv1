@@ -117,19 +117,17 @@ export default function Page() {
         {/* Intro / Toolbar */}
         <section className="mb-8">
           <div className="flex items-center justify-between gap-4">
-            <div className="space-y-2">
+           <div className="space-y-2">
               <div className="flex items-center gap-3">
-                {/* <div className="w-10 h-10 rounded-xl border border-neutral-200 bg-white flex items-center justify-center shadow-sm">
-                  <BarChart3 className="w-5 h-5 text-neutral-900" />
-                </div> */}
-                <h1 className="text-2xl font-medium text-neutral-900 tracking-tighter">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-medium text-neutral-900 tracking-tighter">
                   Resume Gap Analysis
                 </h1>
               </div>
-              <p className="text-neutral-600 max-w-2xl tracking-tighter">
+              <p className="text-xs sm:text-sm md:text-base text-neutral-600 max-w-2xl tracking-tighter">
                 Paste your JD & resume, then get a clear, visual breakdown of alignment, gaps, and improvements.
               </p>
             </div>
+
 
             <ExportPdf />
           </div>
@@ -137,10 +135,10 @@ export default function Page() {
 
         {/* 1) Editors (full width card) */}
         <section className="mb-8">
-          <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl">
+          <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-black shadow-2xl">
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-black ring-1 ring-white/15 flex items-center justify-center">
                   <FileText className="w-4 h-4 text-white" />
                 </div>
                 <h2 className="text-lg font-semibold tracking-tighter">Editors</h2>
@@ -152,7 +150,7 @@ export default function Page() {
 
             <div className="p-6">
               {/* Put Editor directly; it carries your form + analyze button */}
-              <Editor className="data-force-white" onAnalyze={onAnalyze} />
+              <Editor onAnalyze={onAnalyze} />
             </div>
           </div>
         </section>
@@ -240,7 +238,7 @@ export default function Page() {
                     </div>
                     <h2 className="text-lg font-semibold tracking-tighter">Skills Coverage</h2>
                   </div>
-                  <div className="bg-white rounded-2xl p-6">
+                  <div className="bg-black rounded-2xl p-6">
                     <CoverageBar
                       skills={skills}
                       onBarClick={(s) => setActiveSkill(s.skill)}
