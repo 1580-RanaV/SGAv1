@@ -273,7 +273,7 @@ export default function Page() {
                         <h2 className="text-lg text-white font-semibold tracking-tighter">Evidence Highlighting</h2>
                       </div>
                       <span className="rounded-full text-white bg-neutral-800 px-4 py-1 text-xs font-semibold">
-                        JD ↔ Resume
+                        Keywords
                       </span>
                     </div>
 

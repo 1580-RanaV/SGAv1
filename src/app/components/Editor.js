@@ -81,8 +81,12 @@ export default function Editor({ onAnalyze }) {
 
         {jdFileName ? (
           <div className="px-3 pb-2 text-xs text-neutral-500">
-            Attached: <span className="font-medium text-lg">{jdFileName}</span>
-          </div>
+          Attached:{" "}
+          <span className="font-medium text-xs sm:text-sm md:text-base lg:text-lg">
+            {jdFileName}
+          </span>
+        </div>
+
         ) : null}
 
         <div className="px-3 pb-3">
@@ -114,8 +118,12 @@ export default function Editor({ onAnalyze }) {
 
         {resumeFileName ? (
           <div className="px-3 pb-2 text-xs text-neutral-500">
-            Attached: <span className="font-medium text-lg">{resumeFileName}</span>
+            Attached:{" "}
+            <span className="font-medium text-xs sm:text-sm md:text-base lg:text-lg">
+              {resumeFileName}
+            </span>
           </div>
+
         ) : null}
 
         <div className="px-3 pb-3">
