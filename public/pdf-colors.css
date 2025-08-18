@@ -1,15 +1,93 @@
-/* Override Tailwind v4 modern color functions for html2canvas */
-* {
-  color: rgb(0, 0, 0) !important;
-  background-color: rgb(255, 255, 255) !important;
-  border-color: rgb(229, 229, 229) !important;
+/* ===============================
+   PDF FALLBACKS for html2canvas
+   Replace Tailwind v4 oklch/oklab colors
+   with rgb/rgba so html2canvas can parse.
+   =============================== */
+
+/* Text neutrals */
+.text-neutral-900 { color:#171717 !important; }
+.text-neutral-800 { color:#262626 !important; }
+.text-neutral-700 { color:#404040 !important; }
+.text-neutral-600 { color:#525252 !important; }
+.text-neutral-500 { color:#737373 !important; }
+.text-neutral-400 { color:#a3a3a3 !important; }
+.text-neutral-300 { color:#d4d4d4 !important; }
+.text-neutral-200 { color:#e5e5e5 !important; }
+.text-neutral-100 { color:#f5f5f5 !important; }
+.text-neutral-50  { color:#fafafa !important; }
+.text-white       { color:#ffffff !important; }
+.text-black       { color:#000000 !important; }
+
+/* Background neutrals + black/white */
+.bg-neutral-950 { background-color:#0a0a0a !important; }
+.bg-neutral-900 { background-color:#171717 !important; }
+.bg-neutral-800 { background-color:#262626 !important; }
+.bg-neutral-700 { background-color:#404040 !important; }
+.bg-neutral-600 { background-color:#525252 !important; }
+.bg-neutral-500 { background-color:#737373 !important; }
+.bg-neutral-400 { background-color:#a3a3a3 !important; }
+.bg-neutral-300 { background-color:#d4d4d4 !important; }
+.bg-neutral-200 { background-color:#e5e5e5 !important; }
+.bg-neutral-100 { background-color:#f5f5f5 !important; }
+.bg-neutral-50  { background-color:#fafafa !important; }
+
+.bg-black { background-color:#000000 !important; }
+.bg-white { background-color:#ffffff !important; }
+
+/* Common translucent whites used in your UI
+   Note the escaped slash in class names. */
+.bg-white\/5  { background-color:rgba(255,255,255,.05) !important; }
+.bg-white\/10 { background-color:rgba(255,255,255,.10) !important; }
+.bg-white\/15 { background-color:rgba(255,255,255,.15) !important; }
+.bg-white\/20 { background-color:rgba(255,255,255,.20) !important; }
+
+.text-white\/50 { color:rgba(255,255,255,.50) !important; }
+.text-white\/70 { color:rgba(255,255,255,.70) !important; }
+.text-white\/80 { color:rgba(255,255,255,.80) !important; }
+
+/* Borders */
+.border-white\/10 { border-color:rgba(255,255,255,.10) !important; }
+.border-white\/15 { border-color:rgba(255,255,255,.15) !important; }
+.border-white\/20 { border-color:rgba(255,255,255,.20) !important; }
+.border-neutral-700 { border-color:#404040 !important; }
+.border-neutral-300 { border-color:#d4d4d4 !important; }
+.border-black       { border-color:#000000 !important; }
+
+/* Rings (Tailwind ring uses box-shadow with --tw-ring-color).
+   For PDF, approximate by replacing with border. */
+.ring-1.ring-white\/10,
+.ring-1 .ring-white\/10 {
+  box-shadow:none !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+}
+.ring-1.ring-white\/15,
+.ring-1 .ring-white\/15 {
+  box-shadow:none !important;
+  border:1px solid rgba(255,255,255,.15) !important;
+}
+.ring-1.ring-white\/20,
+.ring-1 .ring-white\/20 {
+  box-shadow:none !important;
+  border:1px solid rgba(255,255,255,.20) !important;
+}
+.ring-1.ring-black,
+.ring-1 .ring-black {
+  box-shadow:none !important;
+  border:1px solid #000 !important;
 }
 
-a {
-  color: rgb(0, 102, 204) !important;
-}
+/* Badges (dark-friendly tones used in your app) */
+.bg-green-900\/40 { background-color:rgba(20,83,45,.40) !important; }
+.text-green-300   { color:#86efac !important; }
+.border-green-700\/50 { border-color:rgba(21,128,61,.50) !important; }
 
-button {
-  background-color: rgb(240, 240, 240) !important;
-  color: rgb(0, 0, 0) !important;
-}
+.bg-amber-900\/40 { background-color:rgba(120,53,15,.40) !important; }
+.text-amber-300   { color:#fcd34d !important; }
+.border-amber-700\/50 { border-color:rgba(180,83,9,.50) !important; }
+
+.bg-red-900\/40 { background-color:rgba(127,29,29,.40) !important; }
+.text-red-300   { color:#fca5a5 !important; }
+.border-red-700\/50 { border-color:rgba(185,28,28,.50) !important; }
+
+/* Common focus ring used in inputs */
+.focus\:ring-white\/20:focus { box-shadow:0 0 0 2px rgba(255,255,255,.20) !important; }

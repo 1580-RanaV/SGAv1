@@ -30,36 +30,36 @@
 /* ---------- Self-hosted GeneralSans (ensure files exist at /public) ---------- */
 @font-face {
   font-family: "GeneralSans";
-  src: url("/GeneralSans-Light.woff2") format("woff2"),
-       url("/GeneralSans-Light.woff") format("woff");
+  src: url("/GeneralSans-Light.woff") format("woff");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "GeneralSans";
-  src: url("/GeneralSans-Regular.woff2") format("woff2"),
-       url("/GeneralSans-Regular.woff") format("woff");
+  src: url("/GeneralSans-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "GeneralSans";
-  src: url("/GeneralSans-Medium.woff2") format("woff2"),
-       url("/GeneralSans-Medium.woff") format("woff");
+  src: url("/GeneralSans-Medium.woff") format("woff");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "GeneralSans";
-  src: url("/GeneralSans-Bold.woff2") format("woff2"),
-       url("/GeneralSans-Bold.woff") format("woff");
+  src: url("/GeneralSans-Bold.woff") format("woff");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
+
 
 /* ---------- Base layer ---------- */
 @layer base {

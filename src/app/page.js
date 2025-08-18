@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { Target, Sparkles, FileText, BarChart3, Zap } from "lucide-react";
 
 // Keep your existing components
@@ -28,6 +28,9 @@ export default function Page() {
   const [jdSpans, setJdSpans] = useState([]);
   const [resumeSpans, setResumeSpans] = useState([]);
   const [activeSkill, setActiveSkill] = useState(null);
+
+  // 👇 NEW: ref for the area to export
+  const reportRef = useRef(null);
 
   // Normalize skills for the coverage chart
   const skills = useMemo(() => {
@@ -113,180 +116,192 @@ export default function Page() {
     <div className="min-h-screen bg-white ui-fix">
       <Header />
 
-      <main className="mx-auto max-w-8xl px-6 py-10">
+      <main className="mx-auto max-w-7xl px-6 py-10">
         {/* Intro / Toolbar */}
         <section className="mb-8">
-          <div className="flex items-center justify-between gap-4">
-           <div className="space-y-2">
-              <div className="flex items-center gap-3">
+          <div className="space-y-4">
+            {/* Title + paragraph */}
+            <div className="space-y-4 text-center mt-12">
+              <div className="flex items-center justify-center gap-3">
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-medium text-neutral-900 tracking-tighter">
-                  Resume Gap Analysis
+                  Resume Gap Analysis: Skill Gap Analyzer (SGA) v1.1
                 </h1>
               </div>
-              <p className="text-xs sm:text-sm md:text-base text-neutral-600 max-w-2xl tracking-tighter">
-                Paste your JD & resume, then get a clear, visual breakdown of alignment, gaps, and improvements.
+              <p className="text-xs sm:text-sm md:text-base text-neutral-600 max-w-2xl mx-auto text-center mb-12">
+                Paste your job description and resume to instantly receive a detailed,
+                visual analysis that highlights alignment, uncovers skill gaps, and
+                provides clear recommendations for strengthening your profile and improving
+                your chances of success.
               </p>
             </div>
 
 
-            <ExportPdf />
-          </div>
-        </section>
-
-        {/* 1) Editors (full width card) */}
-        <section className="mb-8">
-          <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-black shadow-2xl">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-black ring-1 ring-white/15 flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-white" />
-                </div>
-                <h2 className="text-lg font-semibold tracking-tighter">Editors</h2>
-              </div>
-              <span className="rounded-full bg-white/10 px-4 py-1 text-xs font-semibold">
-                Job Description + Resume
-              </span>
-            </div>
-
-            <div className="p-6">
-              {/* Put Editor directly; it carries your form + analyze button */}
-              <Editor onAnalyze={onAnalyze} />
+            {/* Export button row */}
+            <div className="flex justify-end">
+              {/* 👇 Pass the ref to ExportPdf */}
+              <ExportPdf targetRef={reportRef} />
             </div>
           </div>
         </section>
 
-        {/* 2) Loading state */}
-        {loading && (
+        {/* 👇 Everything inside this wrapper will be exported */}
+        <div ref={reportRef}>
+          {/* 1) Editors (full width card) */}
           <section className="mb-8">
-            <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-10 text-center">
-              <div className="mx-auto mb-4 w-16 h-16 rounded-2xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
-                <Zap className="w-8 h-8 text-white animate-pulse" />
+            <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-black shadow-2xl">
+              <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-black ring-1 ring-white/15 flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-white" />
+                  </div>
+                  <h2 className="text-lg font-semibold tracking-tighter">Editors</h2>
+                </div>
+                <span className="rounded-full bg-white/10 px-4 py-1 text-xs font-semibold">
+                  Job Description + Resume
+                </span>
               </div>
-              <div className="text-white font-medium tracking-tighter mb-2">
-                Analyzing your resume…
+
+              <div className="p-6">
+                {/* Put Editor directly; it carries your form + analyze button */}
+                <Editor onAnalyze={onAnalyze} />
               </div>
-              <LoadingDots />
             </div>
           </section>
-        )}
 
-        {!loading && (
-          <>
-            {/* 3) Match Score (card) */}
-            {score > 0 && (
-              <section className="mb-8">
-                <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
-                      <BarChart3 className="w-4 h-4 text-white" />
-                    </div>
-                    <h2 className="text-lg text-white font-semibold tracking-tighter">Match Score</h2>
-                  </div>
-                  <div className="bg-black rounded-2xl p-6">
-                    <ScoreGauge value={score} />
-                  </div>
+          {/* 2) Loading state */}
+          {loading && (
+            <section className="mb-8">
+              <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-10 text-center">
+                <div className="mx-auto mb-4 w-16 h-16 rounded-2xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                  <Zap className="w-8 h-8 text-white animate-pulse" />
                 </div>
-              </section>
-            )}
-
-            {/* 4) Skills Gap Analysis (card) */}
-            {(present.length > 0 || missing.length > 0 || weak.length > 0) && (
-              <section className="mb-8">
-                <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl overflow-hidden">
-                  <div className="px-6 py-5 border-b border-white/10 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
-                      <Target className="w-4 h-4 text-white" />
-                    </div>
-                    <h2 className="text-lg font-semibold tracking-tighter">Skills Gap Analysis</h2>
-                  </div>
-                  <div className="p-6 bg-black">
-                    <GapTable
-                      present={present}
-                      missing={missing}
-                      weak={weak}
-                      onSelectSkill={(s) => setActiveSkill(s)}
-                    />
-                  </div>
+                <div className="text-white font-medium tracking-tighter mb-2">
+                  Analyzing your resume…
                 </div>
-              </section>
-            )}
+                <LoadingDots />
+              </div>
+            </section>
+          )}
 
-            {/* 5) AI Recommendations (card) */}
-            {ai.plan.length > 0 && (
-              <section className="mb-8">
-                <div className="rounded-3xl bg-neutral-950 text-black ring-1 ring-white/10 shadow-2xl overflow-hidden">
-                  <div className="px-6 py-5 border-b border-white/10 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
-                      <Sparkles className="w-4 h-4 text-white" />
-                    </div>
-                    <h2 className="text-lg text-white font-semibold tracking-tighter">AI Recommendations</h2>
-                  </div>
-                  <div className="p-6 bg-black">
-                    <Suggestions plan={ai.plan} resume_bullets={ai.resume_bullets} />
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* 6) Skills Coverage (card) */}
-            {skills.length > 0 && (
-              <section className="mb-8">
-                <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
-                      <BarChart3 className="w-4 h-4 text-white" />
-                    </div>
-                    <h2 className="text-lg font-semibold tracking-tighter">Skills Coverage</h2>
-                  </div>
-                  <div className="bg-black rounded-2xl p-6">
-                    <CoverageBar
-                      skills={skills}
-                      onBarClick={(s) => setActiveSkill(s.skill)}
-                    />
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* 7) Evidence Highlighting (card) */}
-            {(jdText || resumeText) && (
-              <section className="mb-8">
-                <div className="rounded-3xl bg-neutral-950 text-black ring-1 ring-white/10 shadow-2xl overflow-hidden">
-                  <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+          {!loading && (
+            <>
+              {/* 3) Match Score (card) */}
+              {score > 0 && (
+                <section className="mb-8">
+                  <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-6">
+                    <div className="flex items-center gap-3 mb-4">
                       <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
-                        <FileText className="w-4 h-4 text-white" />
+                        <BarChart3 className="w-4 h-4 text-white" />
                       </div>
-                      <h2 className="text-lg text-white font-semibold tracking-tighter">Evidence Highlighting</h2>
+                      <h2 className="text-lg text-white font-semibold tracking-tighter">Match Score</h2>
                     </div>
-                    <span className="rounded-full text-white bg-neutral-800 px-4 py-1 text-xs font-semibold">
-                      JD ↔ Resume traceability
-                    </span>
+                    <div className="bg-black rounded-2xl p-6">
+                      <ScoreGauge value={score} />
+                    </div>
                   </div>
+                </section>
+              )}
 
-                  <div className="p-6 bg-black">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      <EvidenceHighlighter
-                        title="Job Description"
-                        text={jdText}
-                        spans={jdSpans}
-                        activeSkill={activeSkill}
-                        onClear={() => setActiveSkill(null)}
-                      />
-                      <EvidenceHighlighter
-                        title="Resume"
-                        text={resumeText}
-                        spans={resumeSpans}
-                        activeSkill={activeSkill}
-                        onClear={() => setActiveSkill(null)}
+              {/* 4) Skills Gap Analysis (card) */}
+              {(present.length > 0 || missing.length > 0 || weak.length > 0) && (
+                <section className="mb-8">
+                  <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-white/10 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                        <Target className="w-4 h-4 text-white" />
+                      </div>
+                      <h2 className="text-lg font-semibold tracking-tighter">Skills Gap Analysis</h2>
+                    </div>
+                    <div className="p-6 bg-black">
+                      <GapTable
+                        present={present}
+                        missing={missing}
+                        weak={weak}
+                        onSelectSkill={(s) => setActiveSkill(s)}
                       />
                     </div>
                   </div>
-                </div>
-              </section>
-            )}
-          </>
-        )}
+                </section>
+              )}
+
+              {/* 5) AI Recommendations (card) */}
+              {ai.plan.length > 0 && (
+                <section className="mb-8">
+                  <div className="rounded-3xl bg-neutral-950 text-black ring-1 ring-white/10 shadow-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-white/10 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                        <Sparkles className="w-4 h-4 text-white" />
+                      </div>
+                      <h2 className="text-lg text-white font-semibold tracking-tighter">AI Recommendations</h2>
+                    </div>
+                    <div className="p-6 bg-black">
+                      <Suggestions plan={ai.plan} resume_bullets={ai.resume_bullets} />
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* 6) Skills Coverage (card) */}
+              {skills.length > 0 && (
+                <section className="mb-8">
+                  <div className="rounded-3xl bg-neutral-950 text-white ring-1 ring-white/10 shadow-2xl p-6">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                        <BarChart3 className="w-4 h-4 text-white" />
+                      </div>
+                      <h2 className="text-lg font-semibold tracking-tighter">Skills Coverage</h2>
+                    </div>
+                    <div className="bg-black rounded-2xl p-6">
+                      <CoverageBar
+                        skills={skills}
+                        onBarClick={(s) => setActiveSkill(s.skill)}
+                      />
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* 7) Evidence Highlighting (card) */}
+              {(jdText || resumeText) && (
+                <section className="mb-8">
+                  <div className="rounded-3xl bg-neutral-950 text-black ring-1 ring-white/10 shadow-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                          <FileText className="w-4 h-4 text-white" />
+                        </div>
+                        <h2 className="text-lg text-white font-semibold tracking-tighter">Evidence Highlighting</h2>
+                      </div>
+                      <span className="rounded-full text-white bg-neutral-800 px-4 py-1 text-xs font-semibold">
+                        JD ↔ Resume
+                      </span>
+                    </div>
+
+                    <div className="p-6 bg-black">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <EvidenceHighlighter
+                          title="Job Description"
+                          text={jdText}
+                          spans={jdSpans}
+                          activeSkill={activeSkill}
+                          onClear={() => setActiveSkill(null)}
+                        />
+                        <EvidenceHighlighter
+                          title="Resume"
+                          text={resumeText}
+                          spans={resumeSpans}
+                          activeSkill={activeSkill}
+                          onClear={() => setActiveSkill(null)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
+            </>
+          )}
+        </div>
+        {/* /ref wrapper */}
       </main>
     </div>
   );

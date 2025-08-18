@@ -3,7 +3,7 @@ import { Target, Sparkles } from "lucide-react";
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/60 shadow-sm">
-      <div className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-center">
+      <div className="mx-auto max-w-7xl px-6 h-18 flex items-center justify-center">
         {/* Logo + Brand */}
         <div className="flex items-center gap-3">
           {/* Three-dot logo */}

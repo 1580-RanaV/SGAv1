@@ -64,7 +64,7 @@ export default function Editor({ onAnalyze }) {
       {/* JD card */}
       <div className="card">
         <div className="p-3 flex items-center justify-between gap-2">
-          <div className="text-sm font-medium">Job Description</div>
+          <div className="text-lg font-medium">Job Description</div>
           <div className="flex items-center gap-2">
             <input
               ref={jdInputRef}
@@ -81,7 +81,7 @@ export default function Editor({ onAnalyze }) {
 
         {jdFileName ? (
           <div className="px-3 pb-2 text-xs text-neutral-500">
-            Attached: <span className="font-medium">{jdFileName}</span>
+            Attached: <span className="font-medium text-lg">{jdFileName}</span>
           </div>
         ) : null}
 
@@ -97,7 +97,7 @@ export default function Editor({ onAnalyze }) {
       {/* Resume card */}
       <div className="card">
         <div className="p-3 flex items-center justify-between gap-2">
-          <div className="text-sm font-medium">Resume</div>
+          <div className="text-lg font-medium">Resume</div>
           <div className="flex items-center gap-2">
             <input
               ref={resumeInputRef}
@@ -114,7 +114,7 @@ export default function Editor({ onAnalyze }) {
 
         {resumeFileName ? (
           <div className="px-3 pb-2 text-xs text-neutral-500">
-            Attached: <span className="font-medium">{resumeFileName}</span>
+            Attached: <span className="font-medium text-lg">{resumeFileName}</span>
           </div>
         ) : null}
 
