@@ -13,6 +13,7 @@ import CoverageBar from "@/app/components/Charts/CoverageBar";
 import LoadingDots from "@/app/components/LoadingDots";
 import ExportPdf from "@/app/components/ExportPdf";
 import EvidenceHighlighter from "@/app/components/EvidenceHighlighter";
+import Footer from "@/app/components/Footer";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -303,6 +304,7 @@ export default function Page() {
         </div>
         {/* /ref wrapper */}
       </main>
+      <Footer />
     </div>
   );
 }
